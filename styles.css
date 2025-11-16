@@ -254,8 +254,25 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;colo
   .hero{padding:16px}
   .name{font-size:38px}
   .lead-photo{width:100%}
-  .debate-buttons{flex-direction:column;align-items:center}
-  .debate-btn, .questions-btn, .calendar-btn{width:100%;max-width:280px;justify-content:center}
-  .calendar-dropdown{width:100%}
-  .calendar-options{left:0;right:0;width:100%}
+  .debate-buttons{
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+  }
+  .debate-btn, .questions-btn, .calendar-btn{
+    width:100%;
+    max-width:280px;
+    justify-content:center;
+    margin:0 auto;
+  }
+  .calendar-dropdown{
+    width:100%;
+    display:flex;
+    justify-content:center;
+  }
+  .calendar-options{
+    left:50%;
+    transform:translateX(-50%);
+    width:280px;
+  }
 }

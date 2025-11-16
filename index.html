@@ -7,7 +7,7 @@
 
   <!-- Google fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.7">
+  <link rel="stylesheet" href="styles.css?v=1.8">
 </head>
 <body>
   <main class="page">
@@ -207,13 +207,16 @@
       });
 
       // Calendar functionality
+      const teamsLink = "https://teams.microsoft.com/l/meetup-join/19%3ameeting_MTBmMDQ4NTAtZjdkMC00MzI4LWIxOTYtNmYwOTA0NWU0ZDQx%40thread.v2/0?context=%7b%22Tid%22%3a%22cd319671-52e7-4a68-afa9-fcf8f89f09ea%22%2c%22Oid%22%3a%22786b4506-5c14-4f27-b06c-9b9f9c52b3f9%22%7d";
+      
       const eventDetails = {
         title: 'DGSS Presidential Debate - Amal Deis',
-        description: 'Join the online presidential debate for DGSS elections. Hear from candidates and submit your questions.',
+        description: 'Join the online presidential debate for DGSS elections. Hear from candidates and submit your questions.\n\nTeams Link: ' + teamsLink,
         location: 'Online - Microsoft Teams',
         start: '2024-11-21T18:00:00',
         end: '2024-11-21T19:00:00',
-        timezone: 'America/Toronto'
+        timezone: 'America/Toronto',
+        url: teamsLink
       };
 
       const calendarOptionLinks = document.querySelectorAll('.calendar-option');
@@ -236,14 +239,18 @@
 
         switch(calendarType) {
           case 'google':
-            calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+            calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&ctz=${event.timezone}`;
             break;
           
           case 'outlook':
-            calendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(event.title)}&startdt=${event.start}&enddt=${event.end}&body=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
+            calendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(event.title)}&startdt=${event.start}&enddt=${event.end}&body=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&path=/calendar/action/compose&rru=addevent`;
             break;
           
           case 'apple':
+            // Apple Calendar uses .ics files but we'll create a proper one
+            createAppleCalendarEvent(event);
+            return;
+          
           case 'ics':
             downloadICSFile(event);
             return;
@@ -254,25 +261,71 @@
         }
       }
 
+      function createAppleCalendarEvent(event) {
+        // Create a proper .ics file for Apple Calendar
+        const icsContent = [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'PRODID:-//Amal Deis Campaign//DGSS Debate//EN',
+          'BEGIN:VEVENT',
+          `UID:${Date.now()}@amaldeis-dgss-campaign`,
+          `SUMMARY:${event.title}`,
+          `DESCRIPTION:${event.description.replace(/\n/g, '\\n')}`,
+          `LOCATION:${event.location}`,
+          `DTSTART;TZID=${event.timezone}:${formatDateForICS(event.start)}`,
+          `DTEND;TZID=${event.timezone}:${formatDateForICS(event.end)}`,
+          `URL:${event.url}`,
+          'BEGIN:VALARM',
+          'TRIGGER:-PT15M',
+          'ACTION:DISPLAY',
+          'DESCRIPTION:Reminder',
+          'END:VALARM',
+          'END:VEVENT',
+          'END:VCALENDAR'
+        ].join('\r\n');
+
+        downloadFile(icsContent, 'DGSS-Presidential-Debate.ics', 'text/calendar');
+      }
+
       function downloadICSFile(event) {
         const icsContent = [
           'BEGIN:VCALENDAR',
           'VERSION:2.0',
+          'PRODID:-//Amal Deis Campaign//DGSS Debate//EN',
           'BEGIN:VEVENT',
+          `UID:${Date.now()}@amaldeis-dgss-campaign`,
           `SUMMARY:${event.title}`,
-          `DESCRIPTION:${event.description}`,
+          `DESCRIPTION:${event.description.replace(/\n/g, '\\n')}`,
           `LOCATION:${event.location}`,
           `DTSTART:${new Date(event.start).toISOString().replace(/-|:|\.\d+/g, '')}`,
           `DTEND:${new Date(event.end).toISOString().replace(/-|:|\.\d+/g, '')}`,
+          `URL:${event.url}`,
+          'BEGIN:VALARM',
+          'TRIGGER:-PT15M',
+          'ACTION:DISPLAY',
+          'DESCRIPTION:Reminder',
+          'END:VALARM',
           'END:VEVENT',
           'END:VCALENDAR'
-        ].join('\n');
+        ].join('\r\n');
 
-        const blob = new Blob([icsContent], { type: 'text/calendar' });
+        downloadFile(icsContent, 'DGSS-Presidential-Debate.ics', 'text/calendar');
+      }
+
+      function formatDateForICS(dateString) {
+        const date = new Date(dateString);
+        return date.toISOString()
+          .replace(/-/g, '')
+          .replace(/:/g, '')
+          .replace(/\..+/, '');
+      }
+
+      function downloadFile(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'DGSS-Presidential-Debate.ics';
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
