@@ -26,30 +26,20 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;colo
 .portrait{width:100%;height:100%;object-fit:cover;display:block}
 .voting-dates{font-weight:700;color:#f3f3f3;margin-top:6px}
 
-/* lead (left stacked promo boxes + right portrait + QR) */
-.lead{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-top:18px;align-items:start}
-.lead-left{display:flex;flex-direction:column;gap:12px}
-.lead-card{padding:18px;border-radius:12px;font-weight:600;font-family:Montserrat, sans-serif}
-.lead-card.grey{background:#d5d7d8;color:var(--navy)}
-.lead-card.navy{background:var(--navy);color:#fff}
-.lead-card.red{background:var(--red);color:#fff}
-.lead-right{display:flex;flex-direction:column;gap:12px;align-items:center}
-.lead-photo{width:100%;border-radius:8px;object-fit:cover;box-shadow:0 8px 24px rgba(11,34,44,0.14)}
-.qr-box{background:#fff;padding:10px;border-radius:10px;border:2px solid var(--light-grey)}
-.qr{width:140px;height:140px;display:block}
-
 /* content grid */
 .content-grid{margin-top:20px;display:grid;grid-template-columns:1fr 360px;gap:20px}
 .card{background:#fff;padding:18px;border-radius:12px;border:2px solid var(--light-grey)}
-.about h2,.commit h2{font-family:Montserrat, sans-serif;margin:0 0 8px 0;color:var(--navy)}
+.about h2,.commit h2,.improvements h2{font-family:Montserrat, sans-serif;margin:0 0 8px 0;color:var(--navy)}
 .about p{margin:8px 0;color:#18323a;line-height:1.4}
-.commit ul{margin:0;padding-left:18px;color:#23414a}
+.commit ul,.improvements ul{margin:0;padding-left:18px;color:#23414a}
+.commit li,.improvements li{margin-bottom:8px;line-height:1.4}
 
-/* three tiles under commit (full width under cards) */
-.three-tiles{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
-.tile{background:#fff;border-radius:10px;padding:14px;border:2px solid var(--light-grey)}
-.tile h3{font-family:Montserrat, sans-serif;margin-top:0;color:var(--navy);font-size:18px}
-.tile ul{margin:8px 0 0 18px;padding:0;color:#23414a}
+/* Right column layout */
+.right-column{display:flex;flex-direction:column;gap:20px}
+.photo-section{display:flex;flex-direction:column;gap:20px}
+.lead-photo{width:100%;border-radius:8px;object-fit:cover;box-shadow:0 8px 24px rgba(11,34,44,0.14)}
+.improvements{grid-column:1 / -1;margin-top:20px}
+.improvements p{margin:0 0 12px 0;color:#18323a;line-height:1.4}
 
 /* contact footer */
 .contact-bar{background:#0b0b0b;color:#fff;border-radius:10px;margin-top:20px;padding:18px}
@@ -57,20 +47,19 @@ html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;colo
 .contact-left{max-width:700px}
 .leadline{font-family:Montserrat, sans-serif;font-weight:700;font-size:20px}
 .cta{margin:6px 0 10px 0;color:#ddd}
-.contact-info .contact-row{margin:6px 0;color:#ddd}
+.contact-info .contact-row{margin:6px 0;color:#ddd;display:flex;align-items:center}
 .contact-row .icon{display:inline-block;width:26px}
-.contact-right{display:flex;align-items:center}
-.qr-small{width:120px}
+.linkedin{width:20px;height:20px;vertical-align:middle;filter:invert(1)}
+.contact-link{color:#fff;text-decoration:none;transition:color 0.2s ease}
+.contact-link:hover{color:var(--red)}
 
 /* responsive */
 @media (max-width:980px){
   .hero-inner{flex-direction:column;align-items:flex-start}
   .hero-right{align-items:flex-start;flex-direction:row;gap:12px}
-  .lead{grid-template-columns:1fr; }
-  .lead-right{order:-1}
   .content-grid{grid-template-columns:1fr}
-  .three-tiles{grid-template-columns:1fr; }
+  .improvements{grid-column:1}
   .hero{padding:16px}
   .name{font-size:38px}
   .lead-photo{width:100%}
-}
+} 
